@@ -1,8 +1,10 @@
 <h1>{{ question.question_text }}</h1>
 
+<li>投票结果</li>
+
 <ul>
 {% for choice in question.choice_set.all %}
-    <li>{{ choice.choice_text }} -- {{ choice.votes }} vote{{ choice.votes|pluralize }}</li>
+    <li>{{ choice.choice_text }} -- {{ choice.votes }} 票</li>
 {% endfor %}
 </ul>
 

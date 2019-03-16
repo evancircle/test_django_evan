@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block content %}
+
+<body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">接口测试平台</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="/logout">Logout</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li><a href="/project/"><i class="glyphicon glyphicon-th-large" style="padding-right: 5px;"></i>项目管理</a></li>
+            <li class="active"><a href="#"><i class="glyphicon glyphicon-th" style="padding-right: 5px;"></i>模块管理</a></li>
+          </ul>
+          <ul class="nav nav-sidebar">
+            <li><a href="#"><i class="glyphicon glyphicon-th-list" style="padding-right: 5px;"></i>用例管理</a></li>
+            <li><a href="#"><i class="glyphicon glyphicon-list-alt" style="padding-right: 5px;"></i>任务管理</a></li>
+          </ul>
+          <ul class="nav nav-sidebar">
+            <li><a href="#"><i class="glyphicon glyphicon-facetime-video" style="padding-right: 5px;"></i>Mock Server</a></li>
+            <li><a href="#"><i class="glyphicon glyphicon-wrench" style="padding-right: 5px;"></i>测试工具</a></li>
+          </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <h4 class="sub-header">模块列表</h4>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Header</th>
+                  <th>Header</th>
+                  <th>Header</th>
+                  <th>Header</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>2,001</td>
+                  <td>Lorem</td>
+                  <td>ipsum</td>
+                  <td>dolor</td>
+                  <td>sit</td>
+                </tr>
+                <tr>
+                  <td>2,002</td>
+                  <td>amet</td>
+                  <td>consectetur</td>
+                  <td>adipiscing</td>
+                  <td>elit</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+</body>
+
+{% endblock%}

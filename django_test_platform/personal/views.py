@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
+from personal.models.project import Project
+from personal.models.module import Module
 
 # Create your views here.
 
@@ -25,11 +27,13 @@ def index(request):
 
 @login_required
 def project_manage(request):
-    return render(request, "project.html")
+    project_all = Project.objects.all()
+    return render(request, "project.html", {"projects": project_all})
 
 @login_required
 def module_manage(request):
-    return render(request, "module.html")
+    module_all = Module.objects.all()
+    return render(request, "module.html", {"modules": module_all})
 
 @login_required
 def logout(request):

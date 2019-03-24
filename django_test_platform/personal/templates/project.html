@@ -41,31 +41,29 @@
           <h4 class="sub-header">项目列表</h4>
           <div class="table-responsive">
             <table class="table table-striped">
+
               <thead>
                 <tr>
-                  <th>#</th>
-                  <th>Header</th>
-                  <th>Header</th>
-                  <th>Header</th>
-                  <th>Header</th>
+                  <th>项目名称</th>
+                  <th>项目描述</th>
+                  <th>项目状态</th>
+                  <th>创建时间</th>
+                  <th>更新时间</th>
                 </tr>
               </thead>
+
+              {% for project in projects%}
               <tbody>
                 <tr>
-                  <td>1,001</td>
-                  <td>Lorem</td>
-                  <td>ipsum</td>
-                  <td>dolor</td>
-                  <td>sit</td>
-                </tr>
-                <tr>
-                  <td>1,002</td>
-                  <td>amet</td>
-                  <td>consectetur</td>
-                  <td>adipiscing</td>
-                  <td>elit</td>
+                  <td>{{project.name}}</td>
+                  <td>{{project.describe}}</td>
+                  <td>{{project.status}}</td>
+                  <td>{{project.create_time}}</td>
+                  <td>{{project.update_time}}</td>
                 </tr>
               </tbody>
+              {% endfor%}
+
             </table>
           </div>
         </div>

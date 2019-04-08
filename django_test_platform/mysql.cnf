@@ -1,4 +1,5 @@
 [client]
+default_authentication_plugin=mysql_native_password
 database = django_test_platform
 user = root
 password = admin12345

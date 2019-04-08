@@ -25,7 +25,7 @@
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
-            <li class="active"><a href="#"><i class="glyphicon glyphicon-th-large" style="padding-right: 5px;"></i>项目管理</a></li>
+            <li class="active"><a href="/project/"><i class="glyphicon glyphicon-th-large" style="padding-right: 5px;"></i>项目管理</a></li>
             <li><a href="/module/"><i class="glyphicon glyphicon-th" style="padding-right: 5px;"></i>模块管理</a></li>
           </ul>
           <ul class="nav nav-sidebar">
@@ -38,12 +38,15 @@
           </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          {% if type == "list" %}
+          <button type="button" class="btn btn-primary" style="float: right" onclick="location.href='/project/add_project'">创建</button>
           <h4 class="sub-header">项目列表</h4>
           <div class="table-responsive">
             <table class="table table-striped">
 
               <thead>
                 <tr>
+                  <th>id</th>
                   <th>项目名称</th>
                   <th>项目描述</th>
                   <th>项目状态</th>
@@ -52,20 +55,108 @@
                 </tr>
               </thead>
 
-              {% for project in projects%}
+              {% for project in projects %}
               <tbody>
                 <tr>
+                  <td>{{project.id}}</td>
                   <td>{{project.name}}</td>
                   <td>{{project.describe}}</td>
-                  <td>{{project.status}}</td>
-                  <td>{{project.create_time}}</td>
-                  <td>{{project.update_time}}</td>
+                  <td>{% if project.status == True %}
+                    <span>开启</span>
+                    {% else %}
+                    <span>关闭</span>
+                    {% endif %}
+                  </td>
+                  <td>{{project.create_time | date:"Y-m-d H:i:s"}}</td>
+                  <td>{{project.update_time | date:"Y-m-d H:i:s"}}</td>
+                  <td>
+                    <a href="/project/edit_project/{{project.id}}/"><i class="glyphicon glyphicon-pencil"></i></a>
+                    <span>|</span>
+                    <a href="/project/delete_project/{{project.id}}/"><i class="glyphicon glyphicon-trash"></i></a>
+                  </td>
                 </tr>
               </tbody>
-              {% endfor%}
+              {% endfor %}
 
             </table>
           </div>
+
+          {% elif type == "add" %}
+          <h4 class="sub-header">添加项目</h4>
+          <form class="form-horizontal" action="/project/add_project/" method="post">
+            <div class="control-group">
+                  <label class="control-label">项目名称</label>
+                  <div class="controls">
+                    <input type="text" id="project_name" class="form-control" placeholder="项目名称" name="project_name" style=" width: 350px;">
+                  </div>
+                  <label class="control-label">状态</label>
+                  <div class="controls">
+                    <div class="radio">
+                      <label>
+                        <input type="radio" name="project_status" id="project_status_on" value="1" checked>
+                        开启
+                      </label>
+                      <label>
+                        <input type="radio" name="project_status" id="project_status_off" value="0">
+                        关闭
+                      </label>
+                    </div>
+                  </div>
+                  <label class="control-label">项目描述</label>
+                  <div class="controls">
+                    <textarea type="textarea" id="project_describe" class="form-control" placeholder="项目描述" name="project_describe" style="width: 350px;height: 164px;"></textarea>
+                  </div>
+              <div style="color:red;padding-bottom: 10px;margin-top: 10px;">{{error}}</div>
+              {% csrf_token %}
+              <button class="btn btn-success" type="submit" value="Add_project" name="Add" style="margin-top: 10px;">保存</button>
+              <button class="btn btn-default" name="Cancel" style="margin-top: 10px;">取消</button>
+            </div>
+          </form>
+
+          {% elif type == "edit" %}
+          <h4 class="sub-header">编辑项目</h4>
+          <form class="form-horizontal" action="/project/edit_project/{{ id }}/" method="post">
+            <div class="control-group">
+              <label class="control-label">项目名称</label>
+              <div class="controls">
+                <input type="text" id="edit_project_name" class="form-control" placeholder="项目名称" name="edit_project_name" value="{{ project.name }}" style=" width: 350px;">
+              </div>
+              <label class="control-label">状态</label>
+              <div class="controls">
+                <div class="radio">
+                  {% if project.status == 1 %}
+                  <label>
+                    <input type="radio" name="edit_project_status" id="edit_status_on_select" value="1" checked>
+                    开启
+                  </label>
+                  <label>
+                    <input type="radio" name="edit_project_status" id="edit_status_off" value="0">
+                    关闭
+                  </label>
+                  {% else %}
+                  <label>
+                    <input type="radio" name="edit_project_status" id="edit_status_on" value="1">
+                    开启
+                  </label>
+                  <label>
+                    <input type="radio" name="edit_project_status" id="project_status_off_select" value="0" checked>
+                    关闭
+                  </label>
+                  {% endif %}
+                </div>
+              </div>
+              <label class="control-label">项目描述</label>
+              <div class="controls">
+                <textarea type="textarea" id="edit_project_describe" class="form-control" placeholder="项目描述" name="edit_project_describe" style="width: 350px;height: 164px;">{{ project.describe }}</textarea>
+              </div>
+              <div style="color:red;padding-bottom: 10px;margin-top: 10px;">{{error}}</div>
+              {% csrf_token %}
+              <button class="btn btn-success" type="submit" value="Edit_project" name="Edit" style="margin-top: 10px;">保存</button>
+              <button class="btn btn-default" name="Cancel" style="margin-top: 10px;">取消</button>
+            </div>
+          </form>
+
+          {% endif %}
         </div>
       </div>
     </div>

@@ -2,6 +2,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from personal.models.project import Project
+from personal.models.module import Module
 
 @login_required
 def project_manage(request):
@@ -52,6 +53,16 @@ def edit_project(request,pid):
 def delete_project(request,pid):
     if request.method == "GET":
         if pid:
-            project = Project.objects.get(id=pid)
-            project.delete()
+            try:
+                project = Project.objects.get(id=pid)
+            except Project.DoesNotExist:
+                return HttpResponseRedirect("/project/")
+            if Module.objects.filter(project_id=project.id).exists():
+                for module in Module.objects.filter(project_id=project.id):
+                    module.delete()
+                project.delete()
+            else:
+                project.delete()
+        return HttpResponseRedirect("/project/")
+    else:
         return HttpResponseRedirect("/project/")

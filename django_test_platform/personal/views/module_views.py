@@ -56,6 +56,11 @@ def edit_module(request,mid):
 def delete_module(request,mid):
     if request.method == "GET":
         if mid:
-            module = Module.objects.get(id=mid)
+            try:
+                module = Module.objects.get(id=mid)
+            except Project.DoesNotExist:
+                return HttpResponseRedirect("/module/")
             module.delete()
+        return HttpResponseRedirect("/module/")
+    else:
         return HttpResponseRedirect("/module/")

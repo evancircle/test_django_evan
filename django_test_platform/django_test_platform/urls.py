@@ -36,4 +36,7 @@ urlpatterns = [
     #模块管理
     path('module/', include('module_app.urls')),
 
+    #模块管理
+    path('testcase/', include('testcase_app.urls')),
+
 ]

@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% block content %}
+
+<body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">接口测试平台</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="/logout">Logout</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li><a href="/project/"><i class="glyphicon glyphicon-th-large" style="padding-right: 5px;"></i>项目管理</a></li>
+            <li><a href="/module/"><i class="glyphicon glyphicon-th" style="padding-right: 5px;"></i>模块管理</a></li>
+          </ul>
+          <ul class="nav nav-sidebar">
+            <li  class="active"><a href="/testcase"><i class="glyphicon glyphicon-th-list" style="padding-right: 5px;"></i>用例管理</a></li>
+            <li><a href="#"><i class="glyphicon glyphicon-list-alt" style="padding-right: 5px;"></i>任务管理</a></li>
+          </ul>
+          <ul class="nav nav-sidebar">
+            <li><a href="#"><i class="glyphicon glyphicon-facetime-video" style="padding-right: 5px;"></i>Mock Server</a></li>
+            <li><a href="#"><i class="glyphicon glyphicon-wrench" style="padding-right: 5px;"></i>测试工具</a></li>
+          </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          {% if type == "debug" %}
+          <h4 class="sub-header">Postman</h4>
+          <div class="input-group">
+            <span class="input-group-addon" style="width: 71px;">* URL</span>
+            <input id="request_url" type="text" class="form-control" style="width: 526px;">
+          </div>
+          <div>
+            <label style="margin-top: 10px;margin-bottom: 10px;">* 请求方式：</label>
+            <label class="radio-inline">
+              <input type="radio" name="request_method" id="get" value="get" checked> Get
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="request_method" id="post" value="post"> Post
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="request_method" id="put" value="put"> Put
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="request_method" id="delete" value="delete"> Delete
+            </label>
+          </div>
+
+          <div class="input-group">
+            <span class="input-group-addon">Header</span>
+            <input id="request_header" type="text" class="form-control" style="width: 526px;">
+          </div>
+
+          <div>
+            <label style="margin-top: 10px;margin-bottom: 10px;">* 参数类型：</label>
+            <label class="radio-inline">
+              <input type="radio" name="request_parameter_type" id="form-data" value="form-data" checked> Form-data
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="request_parameter_type" id="json" value="json"> JSON
+            </label>
+          </div>
+
+          <div class="input-group">
+            <span class="input-group-addon" style="width: 71px;">参数</span>
+            <input id="request_parameter" type="text" class="form-control" style="width: 526px;">
+          </div>
+          <p style="color:#8B8989">说明：以字典的方式设置参数，如：{"id":1, "name":"名称"}</p>
+
+          {% csrf_token %}
+          <div style="margin-right: 10px;">
+            <button type="button" class="btn btn-primary" onclick="reqFun()">发送</button>
+          </div>
+
+          <div style="margin-top: 10px;width: 526px;">
+            <p>返回结果：</p>
+            <textarea id="response" class="form-control" rows="10" name=textarea></textarea>
+          </div>
+
+      {% endif %}
+        </div>
+      </div>
+    </div>
+
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+
+    <script>
+        $.ajaxSetup({
+            data: {csrfmiddlewaretoken: '{{ csrf_token }}'},
+        });
+</script>
+
+<script type="text/javascript">
+    function reqFun(){
+        var url = $("#request_url").val();;
+        var method = $('input[name="request_method"]:checked').val();
+        var header = $("#request_header").val();
+        var parameter_type = $('input[name="request_parameter_type"]:checked').val();
+        var parameter = $("#request_parameter").val();
+        if(url === ""){
+            window.alert("URL不能为空！");
+            return;
+        }
+        $.post("/testcase/debug",
+        {
+            url: url,
+            method: method,
+            header: header,
+            parameter_type: parameter_type,
+            parameter: parameter,
+        },
+        function (data, status) {
+            document.querySelector("#response").value = data.result;
+        });
+
+    };
+    //
+</script>
+{% endblock %}

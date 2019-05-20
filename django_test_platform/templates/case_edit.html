@@ -1,0 +1,257 @@
+{% extends "base.html" %}
+{% block content %}
+
+<body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">接口测试平台</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="/logout">Logout</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li><a href="/project/"><i class="glyphicon glyphicon-th-large" style="padding-right: 5px;"></i>项目管理</a></li>
+            <li><a href="/module/"><i class="glyphicon glyphicon-th" style="padding-right: 5px;"></i>模块管理</a></li>
+          </ul>
+          <ul class="nav nav-sidebar">
+            <li  class="active"><a href="/testcase"><i class="glyphicon glyphicon-th-list" style="padding-right: 5px;"></i>用例管理</a></li>
+            <li><a href="#"><i class="glyphicon glyphicon-list-alt" style="padding-right: 5px;"></i>任务管理</a></li>
+          </ul>
+          <ul class="nav nav-sidebar">
+            <li><a href="#"><i class="glyphicon glyphicon-facetime-video" style="padding-right: 5px;"></i>Mock Server</a></li>
+            <li><a href="#"><i class="glyphicon glyphicon-wrench" style="padding-right: 5px;"></i>测试工具</a></li>
+          </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <!--编辑用例-->
+            <h4 class="sub-header">编辑用例</h4>
+            <div class="input-group">
+            <span class="input-group-addon" style="width: 71px;">* URL</span>
+                <input id="request_url" type="text" class="form-control" style="width: 526px;">
+            </div>
+            <div>
+                <label style="margin-top: 10px;margin-bottom: 10px;">* 请求方式：</label>
+                <label class="radio-inline">
+                    <input type="radio" name="request_method" id="get" value="get"> Get
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="request_method" id="post" value="post"> Post
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="request_method" id="put" value="put"> Put
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="request_method" id="delete" value="delete"> Delete
+                </label>
+            </div>
+
+            <div class="input-group">
+                <span class="input-group-addon">Header</span>
+                <input id="request_header" type="text" class="form-control" style="width: 526px;" value="{}">
+            </div>
+
+            <div>
+                <label style="margin-top: 10px;margin-bottom: 10px;">* 参数类型：</label>
+                <label class="radio-inline">
+                    <input type="radio" name="request_parameter_type" id="form" value="form"> Form-data
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="request_parameter_type" id="json" value="json"> JSON
+                </label>
+            </div>
+
+            <div class="input-group">
+                <span class="input-group-addon" style="width: 71px;">参数</span>
+                <input id="request_parameter" type="text" class="form-control" style="width: 526px;" value="{}">
+            </div>
+            <p style="color:#8B8989">说明：以字典的方式设置参数，如：{"id":1, "name":"名称"}</p>
+
+            {% csrf_token %}
+            <div style="margin-right: 10px;">
+                <button type="button" class="btn btn-primary" onclick="sendFun()">发送</button>
+            </div>
+
+            <div style="margin-top: 10px;width: 526px;">
+                <p>返回结果：</p>
+                <textarea id="response" class="form-control" rows="10" name=textarea></textarea>
+            </div>
+
+            <div style="margin-right: 10px;margin-top: 10px;">
+                <button type="button" class="btn btn-primary" onclick="assertFun()">断言</button>
+            </div>
+
+            <div>
+                <label style="margin-top: 10px;">* 断言类型：</label>
+                <label class="radio-inline">
+                    <input type="radio" name="assert_type" id="contains" value="contains"> 包含
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="assert_type" id="mathches" value="mathches"> 匹配
+                </label>
+            </div>
+
+            <div style="margin-top: 10px;width: 526px;">
+                <p>预期结果：</p>
+                <textarea id="assert" class="form-control" rows="10" name=textarea></textarea>
+            </div>
+
+            <div style="margin-top: 10px;">
+                <label>项目：</label>
+                <select class="selectpicker" id="project_name">
+                    <option value="0">请选择</option>
+                </select>
+            </div>
+
+            <div style="margin-top: 10px;">
+                <label>模块：</label>
+                <select class="selectpicker" id="module_name">
+                    <option value="0">请选择</option>
+                </select>
+            </div>
+
+            <div class="input-group" style="margin-top: 10px;">
+                <span class="input-group-addon" style="width: 71px;">用例名称</span>
+                <input id="case_name" type="text" class="form-control" style="width: 526px;">
+            </div>
+
+            <div style="margin-right: 10px;margin-top: 10px;">
+                <button type="button" class="btn btn-primary" onclick="saveFun()">保存</button>
+            </div>
+
+        </div>
+      </div>
+    </div>
+</body>
+
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.10/dist/css/bootstrap-select.min.css">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.10/dist/js/bootstrap-select.min.js"></script>
+<script type="text/javascript">
+
+    $.ajaxSetup({
+    data: {csrfmiddlewaretoken: '{{ csrf_token }}'},
+    });
+
+    //调用项目的初始化
+    ProjectInit("project_name");
+
+    //TestCase初始化
+    TestCaseInit();
+    
+    //监听项目列表的变化
+    $("#project_name").change(function () {
+        let project_id = $(this).children('option:selected').val();
+        console.log("选择的项目id", project_id);
+        ModuleInit("module_name", project_id);
+    });
+
+    //发送方法
+    function sendFun(){
+        var url = $("#request_url").val();;
+        var method = $('input[name="request_method"]:checked').val();
+        var header = $("#request_header").val();
+        var parameter_type = $('input[name="request_parameter_type"]:checked').val();
+        var parameter = $("#request_parameter").val();
+        if(url === ""){
+            window.alert("URL不能为空！");
+            return;
+        }
+        $.post("/testcase/debug",
+        {
+            url: url,
+            method: method,
+            header: header,
+            parameter_type: parameter_type,
+            parameter: parameter,
+        },
+        function (data, status) {
+            document.querySelector("#response").value = data.result;
+        });
+    };
+    //断言方法
+    function assertFun() {
+        var assert_type = $('input[name="assert_type"]:checked').val();
+        var result_text = $("#result").val();
+        var assert_text = $("#assert").val();
+        console.log("断言的类型额", assert_type);
+        console.log("得到的结果", result_text);
+        console.log("断言的结果", assert_text);
+        if (result_text === "" || assert_text === "") {
+            window.alert("要断言的文本不能为空");
+            return;
+        }
+        $.post("/testcase/assert",
+            {
+                result: result_text,
+                assert: assert_text,
+                assert_type: assert_type,
+            },
+            function (data, status) {
+                alert("提示：" + data.result);
+                console.log("返回的结果", data.result);
+            });
+    };
+    //保存用例
+    function saveFun() {
+        //接口的基本数据
+        let url = $("#request_url").val();
+        let method = $('input[name="request_method"]:checked').val();
+        let header = $("#request_header").val();
+        let parameter_type = $('input[name="request_parameter_type"]:checked').val();
+        let parameter_body = $("#request_parameter").val();
+        // 断言的数据
+        var assert_type = $('input[name="assert_type"]:checked').val();
+        var assert_text = $("#assert").val();
+        // 保存的数据
+        let module_id = $('select[id="module_name"]').val();
+        let case_name = $("#case_name").val();
+        if (url === "") {
+            window.alert("URL不能为空！");
+            return;
+        }else if (assert_type == "" || assert_text === ""){
+            window.alert("断言的类型或参数不能为空！");
+            return;
+        }
+        else if(case_name == ""){
+            window.alert("用例名称不能为空！");
+            return;
+        } else if (module_id == "") {
+            window.alert("所属模块不能为空！");
+            return;
+        }
+        window.alert("parameter:" + parameter_body);
+        $.post("/testcase/save_case",
+        {
+            url: url,
+            method: method,
+            header: header,
+            par_type: parameter_type,
+            par_body: parameter_body,
+            ass_type: assert_type,
+            ass_text: assert_text,
+            mid: module_id,
+            name: case_name,
+        },
+        function (data) {
+            console.log("返回的结果", data);
+            window.alert(data.message);
+        });
+    };
+</script>
+
+{% endblock %} 

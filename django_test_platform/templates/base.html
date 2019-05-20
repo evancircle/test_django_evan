@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>接口测试平台</title>
+
     {% load static %}
+    <script type="text/javascript" src="{% static "js/myCase.js" %}"></script>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -14,10 +16,14 @@
     <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
 
     <script>window.jQuery || document.write('<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"><\/script>')</script>
-s
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
 
     <script src="https://v3.bootcss.com/assets/js/vendor/holder.min.js"></script>
+
+    <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.10/dist/css/bootstrap-select.min.css">-->
+
+	<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.10/dist/js/bootstrap-select.min.js"></script>-->
 
 </head>
 
@@ -26,7 +32,7 @@ s
 
 {% endblock %}
 
-<div class="container theme-showcase" role="main" style="position:absolute;bottom:0;width:100%;height:100px;">
+<div class="container theme-showcase" role="main" style="position:absolute;width:100%;height:100px;">
     <div class="page-header"></div>
     <footer class="footer">
         <p style="text-align:right">&copy;Company 2019,Author: Evan</p>

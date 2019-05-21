@@ -66,22 +66,22 @@ var ModuleInit = function (_cmbModule, pid) {
 
 };
 
-//var SelectModule = function (mid) {
-//
-//        let module_options = document.querySelectorAll("#module_name > option");
-//        console.log("模块个数：", module_options.length);
-//        for (let i = 0; i < module_options.length; i++) {
-//            let m = module_options[i].value;
-//            if (m == mid) {
-//                console.log("所属模块的id：", m);
-//                module_options[i].selected = true;
-//                let text = module_options[i].text;
-//                console.log("所属的模块名称：", text);
-//                document.querySelectorAll(".filter-option-inner-inner")[1].innerText = text;
-//            }
-//
-//        }
-//}
+var SelectModule = function (mid) {
+
+        let module_options = document.querySelectorAll("#module_name > option");
+        console.log("模块个数：", module_options.length);
+        for (let i = 0; i < module_options.length; i++) {
+            let m = module_options[i].value;
+            if (m == mid) {
+                console.log("所属模块的id：", m);
+                module_options[i].selected = true;
+                let text = module_options[i].text;
+                console.log("所属的模块名称：", text);
+                document.querySelectorAll(".filter-option-inner-inner")[1].innerText = text;
+            }
+
+        }
+};
 
 //获取用例信息
 var TestCaseInit = function () {
@@ -134,6 +134,8 @@ var TestCaseInit = function () {
         //用例的名称
         document.querySelector("#case_name").value = resp.data.name;
 
+        ModuleInit("module_name", resp.data.project_id);
+
         let project_options = document.querySelectorAll("#project_name > option");
         console.log("项目个数：", project_options.length);
         for (let i = 0; i < project_options.length; i++) {
@@ -147,24 +149,8 @@ var TestCaseInit = function () {
             }
         }
 
-        ModuleInit("module_name", resp.data.project_id);
-
-        let module_options = document.querySelectorAll("#module_name > option");
-        console.log("模块个数：", module_options.length);
-        for (let i = 0; i < module_options.length; i++) {
-            let m = module_options[i].value;
-            if (m == resp.data.module_id) {
-                console.log("所属模块的id：", m);
-                module_options[i].selected = true;
-                let text = module_options[i].text;
-                console.log("所属的模块名称：", text);
-                document.querySelectorAll(".filter-option-inner-inner")[1].innerText = text;
-            }
-
-        }
-
-//        SelectModule(resp.data.module_id);
+        setTimeout(function(){SelectModule(resp.data.module_id)},10);
 
     });
 
-}
+};

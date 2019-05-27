@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from project_app.models import Project
 from module_app.models import Module
+from testcase_app.models import TestCase
 
 @login_required
 def project_manage(request):
@@ -63,6 +64,9 @@ def delete_project(request,pid):
                 return HttpResponseRedirect("/project/")
             if Module.objects.filter(project_id=project.id).exists():
                 for module in Module.objects.filter(project_id=project.id):
+                    if TestCase.objects.filter(module_id=module.id).exists():
+                        for case in TestCase.objects.filter(module_id=module.id):
+                            case.delete()
                     module.delete()
                 project.delete()
             else:
@@ -71,20 +75,20 @@ def delete_project(request,pid):
     else:
         return HttpResponseRedirect("/project/")
 
-@login_required
-def get_project_list(request):
-    #接口：获取项目列表
-    if request.method == "GET":
-        projects = Project.objects.all()
-        project_list = []
-        for project in projects:
-            project_dict = {
-                "id": project.id,
-                "name": project.name
-            }
-            project_list.append(project_dict)
-
-        return JsonResponse({"status": 10200, "message": "请求成功", "data": project_list})
-
-    else:
-        return JsonResponse({"status": 10101, "message": "请求方法错误"})
+# @login_required
+# def get_project_list(request):
+#     #接口：获取项目列表
+#     if request.method == "GET":
+#         projects = Project.objects.all()
+#         project_list = []
+#         for project in projects:
+#             project_dict = {
+#                 "id": project.id,
+#                 "name": project.name
+#             }
+#             project_list.append(project_dict)
+#
+#         return JsonResponse({"status": 10200, "message": "请求成功", "data": project_list})
+#
+#     else:
+#         return JsonResponse({"status": 10101, "message": "请求方法错误"})

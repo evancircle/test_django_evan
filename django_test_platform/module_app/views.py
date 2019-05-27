@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from module_app.models import Module
 from project_app.models import Project
+from testcase_app.models import TestCase
 from django.http import HttpResponseRedirect, JsonResponse
 
 @login_required
@@ -30,7 +31,7 @@ def add_module(request):
         return HttpResponseRedirect("/module/")
 
 @login_required
-def edit_module(request,mid):
+def edit_module(request, mid):
     #编辑模块
     project_all = Project.objects.all()
     if request.method == "GET":
@@ -56,7 +57,7 @@ def edit_module(request,mid):
         return HttpResponseRedirect("/module/")
 
 @login_required
-def delete_module(request,mid):
+def delete_module(request, mid):
     #删除模块
     if request.method == "GET":
         if mid:
@@ -64,27 +65,32 @@ def delete_module(request,mid):
                 module = Module.objects.get(id=mid)
             except Project.DoesNotExist:
                 return HttpResponseRedirect("/module/")
-            module.delete()
+            if TestCase.objects.filter(module_id=module.id).exists():
+                for case in TestCase.objects.filter(module_id=module.id):
+                    case.delete()
+                module.delete()
+            else:
+                module.delete()
         return HttpResponseRedirect("/module/")
     else:
         return HttpResponseRedirect("/module/")
 
-@login_required
-def get_module_list(request):
-    #接口：根据项目id,获取对应的模块列表
-    if request.method == "POST":
-        pid = request.POST.get("pid", "")
-        if pid == "":
-            return JsonResponse({"status": 10102,"message": "项目id不能空"})
-
-        modules = Module.objects.filter(project=pid)
-        module_list = []
-        for module in modules:
-            module_dict = {
-                "id": module.id,
-                "name": module.name
-            }
-            module_list.append(module_dict)
-        return JsonResponse({"status": 10200, "message": "请求成功","data": module_list})
-    else:
-        return JsonResponse({"status": 10101, "message": "请求方法错误"})
+# @login_required
+# def get_module_list(request):
+#     #接口：根据项目id,获取对应的模块列表
+#     if request.method == "POST":
+#         pid = request.POST.get("pid", "")
+#         if pid == "":
+#             return JsonResponse({"status": 10102,"message": "项目id不能空"})
+#
+#         modules = Module.objects.filter(project=pid)
+#         module_list = []
+#         for module in modules:
+#             module_dict = {
+#                 "id": module.id,
+#                 "name": module.name
+#             }
+#             module_list.append(module_dict)
+#         return JsonResponse({"status": 10200, "message": "请求成功","data": module_list})
+#     else:
+#         return JsonResponse({"status": 10101, "message": "请求方法错误"})

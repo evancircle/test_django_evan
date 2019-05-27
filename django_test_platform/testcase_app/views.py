@@ -1,10 +1,11 @@
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import JsonResponse,HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 import requests
 import json
 from testcase_app.models import TestCase
 from module_app.models import Module
+from project_app.models import Project
 
 # Create your views here.
 @login_required
@@ -128,7 +129,8 @@ def testcase_assert(request):
 @login_required
 def testcase_save(request):
     #用例保存
-    if request.method == "POST":
+    cid = request.POST.get("cid", "")
+    if request.method == "POST" and cid == '':
         url = request.POST.get("url", "")
         method = request.POST.get("method", "")
         header = request.POST.get("header", "")
@@ -139,16 +141,6 @@ def testcase_save(request):
         module_id = request.POST.get("mid", "")
         name = request.POST.get("name", "")
 
-        print("url", url)
-        print("method", method)
-        print("header", header)
-        print("parameter_type", parameter_type)
-        print("parameter_body", parameter_body)
-        print("assert_type", assert_type)
-        print("assert_text", assert_text)
-        print("module_id", module_id)
-        print("name", name)
-
         if name == "":
             return JsonResponse({"status": 10101, "message": "用例名称不能为空"})
 
@@ -158,15 +150,14 @@ def testcase_save(request):
         if assert_type == "" or assert_text == "":
             return JsonResponse({"status": 10102, "message": "断言的类型或文本不能为空"})
 
-        # ...
         if method == "get":
-            module_number = 1
+            method_number = 1
         elif method == "post":
-            module_number = 2
+            method_number = 2
         elif method == "delete":
-            module_number = 3
+            method_number = 3
         elif method == "put":
-            module_number = 4
+            method_number = 4
         else:
             return JsonResponse({"status": 10104, "message": "未知的请求方法"})
 
@@ -184,13 +175,71 @@ def testcase_save(request):
         else:
             return JsonResponse({"status": 10104, "message": "未知的断言类型"})
 
-        ret = TestCase.objects.create(name=name, module_id=module_id,
-                                      url=url, method=module_number, header=header,
-                                      parameter_type=parameter_number, parameter_body=parameter_body,
-                                      assert_type=assert_number, assert_text=assert_text)
-        print(ret)
+        TestCase.objects.create(name=name, module_id=module_id,
+                                    url=url, method=method_number, header=header,
+                                    parameter_type=parameter_number, parameter_body=parameter_body,
+                                    assert_type=assert_number, assert_text=assert_text)
 
         return JsonResponse({"status": 10200, "message": "创建成功！"})
+
+    if request.method == "POST" and cid != '':
+        url = request.POST.get("url", "")
+        method = request.POST.get("method", "")
+        header = request.POST.get("header", "")
+        parameter_type = request.POST.get("par_type", "")
+        parameter_body = request.POST.get("par_body", "")
+        assert_type = request.POST.get("ass_type", "")
+        assert_text = request.POST.get("ass_text", "")
+        module_id = request.POST.get("mid", "")
+        name = request.POST.get("name", "")
+
+        if name == "":
+            return JsonResponse({"status": 10101, "message": "用例名称不能为空"})
+
+        if module_id == "":
+            return JsonResponse({"status": 10103, "message": "所属的模块不能为空"})
+
+        if assert_type == "" or assert_text == "":
+            return JsonResponse({"status": 10102, "message": "断言的类型或文本不能为空"})
+
+        if method == "get":
+            method_number = 1
+        elif method == "post":
+            method_number = 2
+        elif method == "delete":
+            method_number = 3
+        elif method == "put":
+            method_number = 4
+        else:
+            return JsonResponse({"status": 10104, "message": "未知的请求方法"})
+
+        if parameter_type == "form":
+            parameter_number = 1
+        elif parameter_type == "json":
+            parameter_number = 2
+        else:
+            return JsonResponse({"status": 10104, "message": "未知的参数类型"})
+
+        if assert_type == "contains":
+            assert_number = 1
+        elif assert_type == "mathches":
+            assert_number = 2
+        else:
+            return JsonResponse({"status": 10104, "message": "未知的断言类型"})
+
+        case = TestCase.objects.get(id=cid)
+        case.name = name
+        case.module_id = module_id
+        case.url = url
+        case.method = method_number
+        case.header = header
+        case.parameter_type = parameter_number
+        case.parameter_body = parameter_body
+        case.assert_type = assert_number
+        case.assert_text = assert_text
+        case.save()
+
+        return JsonResponse({"status": 10200, "message": "修改成功！"})
 
     else:
         return JsonResponse({"status": 10100, "message": "请求方法错误"})
@@ -201,7 +250,7 @@ def get_case_info(request):
         cid = request.POST.get("cid", "")
         case = TestCase.objects.get(id=cid)
         module = Module.objects.get(id=case.module.id)
-        project_id = module.project.id;
+        project_id = module.project.id
 
         case_dict = {
             "id": case.id,
@@ -216,7 +265,47 @@ def get_case_info(request):
             "module_id": case.module.id,
             "project_id": project_id,
         }
-        return JsonResponse({"status": 10200,"message": "请求成功","data": case_dict})
+        return JsonResponse({"status": 10200, "message": "请求成功","data": case_dict})
 
+    else:
+        return JsonResponse({"status": 10100, "message": "请求方法错误"})
+
+@login_required
+def delete_case(request, cid):
+    #删除列表
+    if request.method == "GET":
+        if cid:
+            try:
+                case = TestCase.objects.get(id=cid)
+            except TestCase.DoesNotExist:
+                return HttpResponseRedirect("/testcase/")
+            else:
+                case.delete()
+        return HttpResponseRedirect("/testcase/")
+    else:
+        return HttpResponseRedirect("/testcase/")
+
+@login_required
+def get_select_data(request):
+    #获取项目和模块
+    if request.method == "GET":
+        projects = Project.objects.all()
+        data_list = []
+        for project in projects:
+            project_dict = {
+                "id": project.id,
+                "name": project.name
+            }
+            modules = Module.objects.filter(project_id=project.id)
+            module_list = []
+            for module in modules:
+                module_list.append({
+                    "id": module.id,
+                    "name": module.name,
+                })
+            project_dict["moduleList"] = module_list
+            data_list.append(project_dict)
+
+        return JsonResponse({"status": 10200, "message": "success", "data": data_list})
     else:
         return JsonResponse({"status": 10100, "message": "请求方法错误"})

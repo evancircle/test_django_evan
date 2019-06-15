@@ -39,4 +39,7 @@ urlpatterns = [
     #模块管理
     path('testcase/', include('testcase_app.urls')),
 
+    #任务管理
+    path('testtask/', include('testtask_app.urls')),
+
 ]

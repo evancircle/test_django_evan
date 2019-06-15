@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse,HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator,  EmptyPage, PageNotAnInteger
 import requests
 import json
 from testcase_app.models import TestCase
@@ -11,8 +12,18 @@ from project_app.models import Project
 @login_required
 def testcase_manage(request):
     #用例列表
-    case_list = TestCase.objects.all()
-    return render(request, "case_list.html", {"cases": case_list})
+    case_list = TestCase.objects.get_queryset().order_by('id')
+    p = Paginator(case_list, 3)
+    page = request.GET.get('page')
+    try:
+        contacts = p.page(page)
+    except PageNotAnInteger:
+        # 如果页数不是整型, 取第一页.
+        contacts = p.page(1)
+    except EmptyPage:
+        # 如果页数超出查询范围，取最后一页
+        contacts = p.page(p.num_pages)
+    return render(request, "case_list.html", {"cases": contacts})
 
 @login_required
 def add_case(request):

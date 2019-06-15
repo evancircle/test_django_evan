@@ -29,8 +29,8 @@
             <li><a href="/module/"><i class="glyphicon glyphicon-th" style="padding-right: 5px;"></i>模块管理</a></li>
           </ul>
           <ul class="nav nav-sidebar">
-            <li  class="active"><a href="/testcase"><i class="glyphicon glyphicon-th-list" style="padding-right: 5px;"></i>用例管理</a></li>
-            <li><a href="#"><i class="glyphicon glyphicon-list-alt" style="padding-right: 5px;"></i>任务管理</a></li>
+            <li  class="active"><a href="/testcase/"><i class="glyphicon glyphicon-th-list" style="padding-right: 5px;"></i>用例管理</a></li>
+            <li><a href="/testtask/"><i class="glyphicon glyphicon-list-alt" style="padding-right: 5px;"></i>任务管理</a></li>
           </ul>
           <ul class="nav nav-sidebar">
             <li><a href="#"><i class="glyphicon glyphicon-facetime-video" style="padding-right: 5px;"></i>Mock Server</a></li>
@@ -76,6 +76,40 @@
                     </tbody>
                 </table>
             </div>
+
+            <!-- 分页器 -->
+            <div><nav aria-label="Page navigation">
+                <ul class="pagination">
+                    <li>
+                        {% if cases.has_previous %}
+                        <a href="?page={{ cases.previous_page_number }}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                        {% endif %}
+                    </li>
+
+                    <li>
+                        <a href="#">{{ cases.number }}</a>
+                    </li>
+
+                    {% if cases.has_next %}
+
+                    <li>
+                        <a href="?page={{ cases.next_page_number }}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+
+                    {% endif %}
+
+                    <li>
+                        <a href="#">共：{{ cases.paginator.num_pages }} 页</a>
+                    </li>
+
+                </ul>
+            </nav>
+            </div>
+
         </div>
       </div>
     </div>
